@@ -39,6 +39,7 @@ end
 
 hook.Remove("OnEntityCreated", "CFC_LimitExplosives")
 hook.Add("OnEntityCreated", "CFC_LimitExplosives", function( ent )
+    if limits[ent:GetClass()] == nil then return end
     -- the entity has no owner until the next tick
     timer.Simple( 0, function() 
         onExplosiveCreated( ent.Owner, ent )
