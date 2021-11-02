@@ -3,10 +3,6 @@ local limits = {
     npc_satchel = 15
 }
 
-for _, k in ipairs( player.GetHumans() ) do
-    k.placedExplosives = nil
-end
-
 local function getExplosivesTable( ply, class )
     if limits[class] == nil then return end
 
@@ -18,12 +14,14 @@ end
 
 local function onExplosiveCreated( ent )
     if not IsValid( ent ) then return end
-    if not limits[ent:GetClass()] then return end
+
+    local class = ent:GetClass()
+    if not limits[class] then return end
+
     local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
     if not IsValid( owner ) then return end
     if not IsValid( ent ) then return end
 
-    local class = ent:GetClass()
     local explosives = getExplosivesTable( owner, class )
     if explosives == nil then return end
 
@@ -38,13 +36,16 @@ end
 
 local function onExplosiveRemoved( ent )
     if not IsValid( ent ) then return end
-    if not limits[ent:GetClass()] then return end
+
+    local class = ent:GetClass()
+
+    if not limits[class] then return end
     local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
 
     if not IsValid( owner ) then return end
     if not IsValid( ent ) then return end
 
-    local explosives = getExplosivesTable( owner, ent:GetClass() )
+    local explosives = getExplosivesTable( owner, class )
     if explosives == nil then return end
 
     table.RemoveByValue( explosives, ent )
