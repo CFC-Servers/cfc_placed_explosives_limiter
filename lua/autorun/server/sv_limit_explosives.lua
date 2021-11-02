@@ -1,6 +1,11 @@
 local limits = {
-    m9k_proxy = 4
+    m9k_proxy = 4,
+    npc_satchel = 15
 }
+
+for _, k in ipairs( player.GetHumans() ) do
+    k.placedExplosives = nil
+end
 
 local function getExplosivesTable( ply, class )
     if limits[class] == nil then return end
@@ -11,7 +16,10 @@ local function getExplosivesTable( ply, class )
     return ply.placedExplosives[class]
 end
 
-local function onExplosiveCreated( owner, ent )
+local function onExplosiveCreated( ent )
+    if not IsValid( ent ) then return end
+    if not limits[ent:GetClass()] then return end
+    local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
     if not IsValid( owner ) then return end
     if not IsValid( ent ) then return end
 
@@ -28,25 +36,26 @@ local function onExplosiveCreated( owner, ent )
 
 end
 
-local function onExplosiveRemoved( owner, ent )
+local function onExplosiveRemoved( ent )
+    if not IsValid( ent ) then return end
+    if not limits[ent:GetClass()] then return end
+    local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
+
     if not IsValid( owner ) then return end
     if not IsValid( ent ) then return end
 
     local explosives = getExplosivesTable( owner, ent:GetClass() )
     if explosives == nil then return end
+
     table.RemoveByValue( explosives, ent )
 end
 
 hook.Remove( "OnEntityCreated", "CFC_LimitExplosives" )
 hook.Add( "OnEntityCreated", "CFC_LimitExplosives", function( ent )
-    if limits[ent:GetClass()] == nil then return end
-    -- the entity has no owner until the next tick
     timer.Simple( 0, function()
-        onExplosiveCreated( ent.Owner, ent )
-    end )
-end )
+        onExplosiveCreated( ent )
+    end)
+end)
 
 hook.Remove( "EntityRemoved", "CFC_LimitExplosives" )
-hook.Add( "EntityRemoved", "CFC_LimitExplosives", function( ent )
-     onExplosiveRemoved ( ent.Owner, ent )
-end )
+hook.Add( "EntityRemoved", "CFC_LimitExplosives", onExplosiveRemoved )
