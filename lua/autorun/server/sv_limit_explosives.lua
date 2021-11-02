@@ -13,6 +13,7 @@ local function getExplosivesTable( ply, class )
 end
 
 local function onExplosiveCreated( ent )
+    if not IsValid( ent ) then return end
     local class = ent:GetClass()
     if not limits[class] then return end
 
