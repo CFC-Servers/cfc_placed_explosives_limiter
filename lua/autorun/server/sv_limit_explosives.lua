@@ -1,3 +1,4 @@
+local isValid = IsValid
 local limits = {
     m9k_proxy = 4,
     npc_satchel = 15
@@ -13,13 +14,13 @@ local function getExplosivesTable( ply, class )
 end
 
 local function onExplosiveCreated( ent )
-    if not IsValid( ent ) then return end
+    if not isValid( ent ) then return end
     local class = ent:GetClass()
     if not limits[class] then return end
 
     local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
-    if not IsValid( owner ) then return end
-    if not IsValid( ent ) then return end
+    if not isValid( owner ) then return end
+    if not isValid( ent ) then return end
 
     local explosives = getExplosivesTable( owner, class )
     if explosives == nil then return end
@@ -34,15 +35,15 @@ local function onExplosiveCreated( ent )
 end
 
 local function onExplosiveRemoved( ent )
-    if not IsValid( ent ) then return end
+    if not isValid( ent ) then return end
 
     local class = ent:GetClass()
 
     if not limits[class] then return end
     local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
 
-    if not IsValid( owner ) then return end
-    if not IsValid( ent ) then return end
+    if not isValid( owner ) then return end
+    if not isValid( ent ) then return end
 
     local explosives = getExplosivesTable( owner, class )
     if explosives == nil then return end
