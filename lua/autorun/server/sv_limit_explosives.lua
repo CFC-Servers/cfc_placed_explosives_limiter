@@ -40,7 +40,7 @@ local function onExplosiveRemoved( ent )
     local class = ent:GetClass()
 
     if not limits[class] then return end
-    local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
+    local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner or this.ProxyBombOwner
 
     if not isValid( owner ) then return end
     if not isValid( ent ) then return end
