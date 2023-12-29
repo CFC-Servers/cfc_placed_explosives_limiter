@@ -14,8 +14,6 @@ local function getExplosivesTable( ply, class )
 end
 
 local function getOwner( ent )
-    if not isValid( ent ) then return end
-
     local owner = ent:GetInternalVariable( "m_hThrower" )
     if isValid( owner ) then return owner end
 
@@ -28,6 +26,7 @@ end
 
 local function onExplosiveCreated( ent )
     if not isValid( ent ) then return end
+
     local class = ent:GetClass()
     if not limits[class] then return end
 
