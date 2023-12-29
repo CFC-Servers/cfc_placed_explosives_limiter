@@ -13,14 +13,26 @@ local function getExplosivesTable( ply, class )
     return ply.placedExplosives[class]
 end
 
+local function getOwner( ent )
+    if not isValid( ent ) then return end
+
+    local owner = ent:GetInternalVariable( "m_hThrower" )
+    if isValid( owner ) then return owner end
+
+    owner = ent.Owner
+    if isValid( owner ) then return owner end
+
+    owner = ent.ProxyBombOwner
+    if isValid( owner ) then return owner end
+end
+
 local function onExplosiveCreated( ent )
     if not isValid( ent ) then return end
     local class = ent:GetClass()
     if not limits[class] then return end
 
-    local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner
-    if not isValid( owner ) then return end
-    if not isValid( ent ) then return end
+    local owner = getOwner( ent )
+    if not owner then return end
 
     local explosives = getExplosivesTable( owner, class )
     if explosives == nil then return end
@@ -31,7 +43,6 @@ local function onExplosiveCreated( ent )
         explosives[#explosives]:Remove()
         explosives[#explosives] = nil
     end
-
 end
 
 local function onExplosiveRemoved( ent )
@@ -40,10 +51,9 @@ local function onExplosiveRemoved( ent )
     local class = ent:GetClass()
 
     if not limits[class] then return end
-    local owner = ent:GetInternalVariable( "m_hThrower" ) or ent.Owner or ent.ProxyBombOwner
 
-    if not isValid( owner ) then return end
-    if not isValid( ent ) then return end
+    local owner = getOwner( ent )
+    if not owner then return end
 
     local explosives = getExplosivesTable( owner, class )
     if explosives == nil then return end
