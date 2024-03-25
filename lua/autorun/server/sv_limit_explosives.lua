@@ -39,7 +39,7 @@ local function onExplosiveCreated( ent )
     table.insert( explosives, 1, ent )
 
     if #explosives > limits[class] then
-        explosives[#explosives]:Remove()
+        SafeRemoveEntity( explosives[#explosives] )
         explosives[#explosives] = nil
     end
 end
