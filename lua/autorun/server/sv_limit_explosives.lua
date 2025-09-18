@@ -1,7 +1,8 @@
 local isValid = IsValid
 local limits = {
     m9k_proxy = 4,
-    npc_satchel = 15
+    npc_satchel = 15,
+    m9k_improvised_explosive = 20
 }
 
 local function getExplosivesTable( ply, class )
@@ -18,6 +19,9 @@ local function getOwner( ent )
     if isValid( owner ) then return owner end
 
     owner = ent.Owner
+    if isValid( owner ) then return owner end
+
+    owner = ent.BombOwner
     if isValid( owner ) then return owner end
 
     owner = ent.ProxyBombOwner
